@@ -10,7 +10,7 @@
   </style>
 </head>
 <body>
-  <h1>Prueba de API REST - Usuarios</h1>
+  <h1>API Abarrotes</h1>
 
   <h3>Agregar Usuario</h3>
   <input type="text" id="name" placeholder="Nombre">
@@ -44,49 +44,84 @@
       document.getElementById("output").value = JSON.stringify(data, null, 2);
     }
 
-    function addUser() {
-      fetch(`${baseURL}/addUser`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: document.getElementById("name").value,
-          email: document.getElementById("email").value,
-          pwd: document.getElementById("pwd").value
-        })
-      }).then(res => res.json()).then(showOutput);
+    function clearInputs(...ids) {
+      ids.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = "";
+      });
     }
 
-    function updateUser() {
-      fetch(`${baseURL}/update`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: document.getElementById("upd_id").value,
-          name: document.getElementById("upd_name").value,
-          email: document.getElementById("upd_email").value,
-          pwd: document.getElementById("upd_pwd").value
-        })
-      }).then(res => res.json()).then(showOutput);
+    async function addUser() {
+      try {
+        const res = await fetch(`${baseURL}/addUser`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            pwd: document.getElementById("pwd").value
+          })
+        });
+        const data = await res.json();
+        showOutput(data);
+        clearInputs("name", "email", "pwd");
+      } catch (err) {
+        showOutput({ error: err.message });
+      }
     }
 
-    function deleteUser() {
-      const id = document.getElementById("del_id").value;
-      fetch(`${baseURL}/delete/${id}`, {
-        method: "DELETE"
-      }).then(res => res.json()).then(showOutput);
+    async function updateUser() {
+      try {
+        const res = await fetch(`${baseURL}/update`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: document.getElementById("upd_id").value,
+            name: document.getElementById("upd_name").value,
+            email: document.getElementById("upd_email").value,
+            pwd: document.getElementById("upd_pwd").value
+          })
+        });
+        const data = await res.json();
+        showOutput(data);
+        clearInputs("upd_id", "upd_name", "upd_email", "upd_pwd");
+      } catch (err) {
+        showOutput({ error: err.message });
+      }
     }
 
-    function getUsers() {
-      fetch(`${baseURL}/users`)
-        .then(res => res.json())
-        .then(showOutput);
+    async function deleteUser() {
+      try {
+        const id = document.getElementById("del_id").value;
+        const res = await fetch(`${baseURL}/delete/${id}`, { method: "DELETE" });
+        const data = await res.json();
+        showOutput(data);
+        clearInputs("del_id");
+      } catch (err) {
+        showOutput({ error: err.message });
+      }
     }
 
-    function getUser() {
-      const id = document.getElementById("get_id").value;
-      fetch(`${baseURL}/user/${id}`)
-        .then(res => res.json())
-        .then(showOutput);
+    async function getUsers() {
+      try {
+        const res = await fetch(`${baseURL}/users`);
+        const data = await res.json();
+        showOutput(data);
+      } catch (err) {
+        showOutput({ error: err.message });
+      }
+    }
+
+    async function getUser() {
+      try {
+        const id = document.getElementById("get_id").value;
+        const res = await fetch(`${baseURL}/user/${id}`);
+        const data = await res.json();
+        showOutput(data);
+        clearInputs("get_id");
+      } catch (err) {
+        showOutput({ error: err.message });
+      }
     }
   </script>
 </body>
