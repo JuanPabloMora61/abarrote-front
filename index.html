@@ -1,128 +1,157 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Prueba de API REST</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    input, button { margin: 5px; padding: 5px; }
-    textarea { width: 100%; height: 200px; }
-  </style>
-</head>
-<body>
-  <h1>API Abarrotes</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prueba de API REST</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      input,
+      button {
+        margin: 5px;
+        padding: 5px;
+      }
+      textarea {
+        width: 100%;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>API Abarrotes</h1>
 
-  <h3>Agregar Usuario</h3>
-  <input type="text" id="name" placeholder="Nombre">
-  <input type="email" id="email" placeholder="Correo">
-  <input type="password" id="pwd" placeholder="Contraseña">
-  <button onclick="addUser()">Agregar</button>
+    <h3>Agregar Usuario</h3>
+    <input type="text" id="name" placeholder="Nombre" />
+    <input type="email" id="email" placeholder="Correo" />
+    <input type="password" id="pwd" placeholder="Contraseña" />
+    <button onclick="addUser()">Agregar</button>
 
-  <h3>Actualizar Usuario</h3>
-  <input type="number" id="upd_id" placeholder="ID">
-  <input type="text" id="upd_name" placeholder="Nuevo nombre">
-  <input type="email" id="upd_email" placeholder="Nuevo correo">
-  <input type="password" id="upd_pwd" placeholder="Nueva contraseña">
-  <button onclick="updateUser()">Actualizar</button>
+    <h3>Actualizar Usuario</h3>
+    <input type="number" id="upd_id" placeholder="ID" />
+    <input type="text" id="upd_name" placeholder="Nuevo nombre" />
+    <input type="email" id="upd_email" placeholder="Nuevo correo" />
+    <input type="password" id="upd_pwd" placeholder="Nueva contraseña" />
+    <button onclick="updateUser()">Actualizar</button>
 
-  <h3>Eliminar Usuario</h3>
-  <input type="number" id="del_id" placeholder="ID a eliminar">
-  <button onclick="deleteUser()">Eliminar</button>
+    <h3>Eliminar Usuario</h3>
+    <input type="number" id="del_id" placeholder="ID a eliminar" />
+    <button onclick="deleteUser()">Eliminar</button>
 
-  <h3>Consultar</h3>
-  <button onclick="getUsers()">Ver todos</button>
-  <input type="number" id="get_id" placeholder="ID">
-  <button onclick="getUser()">Buscar por ID</button>
+    <h3>Consultar</h3>
+    <button onclick="getUsers()">Ver todos</button>
+    <input type="number" id="get_id" placeholder="ID" />
+    <button onclick="getUser()">Buscar por ID</button>
 
-  <h3>Resultado</h3>
-  <textarea id="output" readonly></textarea>
+    <h3>Resultado</h3>
+    <textarea id="output" readonly></textarea>
 
-  <script>
-    const baseURL = "https://abarrotes-3zch.onrender.com";
+    <section>
+      <h3>Reiniciar AUTO_INCREMENT</h3>
+      <button onclick="resetAutoIncrement()">Reiniciar</button>
+    </section>
 
-    function showOutput(data) {
-      document.getElementById("output").value = JSON.stringify(data, null, 2);
-    }
+    <script>
+      const baseURL = "https://abarrotes-3zch.onrender.com";
 
-    function clearInputs(...ids) {
-      ids.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = "";
-      });
-    }
+      function showOutput(data) {
+        document.getElementById("output").value = JSON.stringify(data, null, 2);
+      }
 
-    async function addUser() {
-      try {
-        const res = await fetch(`${baseURL}/addUser`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: document.getElementById("name").value,
-            email: document.getElementById("email").value,
-            pwd: document.getElementById("pwd").value
-          })
+      function clearInputs(...ids) {
+        ids.forEach((id) => {
+          const input = document.getElementById(id);
+          if (input) input.value = "";
         });
-        const data = await res.json();
-        showOutput(data);
-        clearInputs("name", "email", "pwd");
-      } catch (err) {
-        showOutput({ error: err.message });
       }
-    }
 
-    async function updateUser() {
-      try {
-        const res = await fetch(`${baseURL}/update`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: document.getElementById("upd_id").value,
-            name: document.getElementById("upd_name").value,
-            email: document.getElementById("upd_email").value,
-            pwd: document.getElementById("upd_pwd").value
-          })
-        });
-        const data = await res.json();
-        showOutput(data);
-        clearInputs("upd_id", "upd_name", "upd_email", "upd_pwd");
-      } catch (err) {
-        showOutput({ error: err.message });
+      async function addUser() {
+        try {
+          const res = await fetch(`${baseURL}/addUser`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: document.getElementById("name").value,
+              email: document.getElementById("email").value,
+              pwd: document.getElementById("pwd").value,
+            }),
+          });
+          const data = await res.json();
+          showOutput(data);
+          clearInputs("name", "email", "pwd");
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
       }
-    }
 
-    async function deleteUser() {
-      try {
-        const id = document.getElementById("del_id").value;
-        const res = await fetch(`${baseURL}/delete/${id}`, { method: "DELETE" });
-        const data = await res.json();
-        showOutput(data);
-        clearInputs("del_id");
-      } catch (err) {
-        showOutput({ error: err.message });
+      async function updateUser() {
+        try {
+          const res = await fetch(`${baseURL}/update`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: document.getElementById("upd_id").value,
+              name: document.getElementById("upd_name").value,
+              email: document.getElementById("upd_email").value,
+              pwd: document.getElementById("upd_pwd").value,
+            }),
+          });
+          const data = await res.json();
+          showOutput(data);
+          clearInputs("upd_id", "upd_name", "upd_email", "upd_pwd");
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
       }
-    }
 
-    async function getUsers() {
-      try {
-        const res = await fetch(`${baseURL}/users`);
-        const data = await res.json();
-        showOutput(data);
-      } catch (err) {
-        showOutput({ error: err.message });
+      async function deleteUser() {
+        try {
+          const id = document.getElementById("del_id").value;
+          const res = await fetch(`${baseURL}/delete/${id}`, {
+            method: "DELETE",
+          });
+          const data = await res.json();
+          showOutput(data);
+          clearInputs("del_id");
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
       }
-    }
 
-    async function getUser() {
-      try {
-        const id = document.getElementById("get_id").value;
-        const res = await fetch(`${baseURL}/user/${id}`);
-        const data = await res.json();
-        showOutput(data);
-        clearInputs("get_id");
-      } catch (err) {
-        showOutput({ error: err.message });
+      async function getUsers() {
+        try {
+          const res = await fetch(`${baseURL}/users`);
+          const data = await res.json();
+          showOutput(data);
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
       }
-    }
-  </script>
-</body>
+
+      async function getUser() {
+        try {
+          const id = document.getElementById("get_id").value;
+          const res = await fetch(`${baseURL}/user/${id}`);
+          const data = await res.json();
+          showOutput(data);
+          clearInputs("get_id");
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
+      }
+
+      async function resetAutoIncrement() {
+        try {
+          const res = await fetch(`${baseURL}/reset-autoincrement`, {
+            method: "POST",
+          });
+          const data = await res.json();
+          showOutput(data);
+        } catch (err) {
+          showOutput({ error: err.message });
+        }
+      }
+    </script>
+  </body>
 </html>
