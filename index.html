@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Prueba de API REST</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button { margin: 5px; padding: 5px; }
+    textarea { width: 100%; height: 200px; }
+  </style>
+</head>
+<body>
+  <h1>Prueba de API REST - Usuarios</h1>
+
+  <h3>Agregar Usuario</h3>
+  <input type="text" id="name" placeholder="Nombre">
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="pwd" placeholder="Contraseña">
+  <button onclick="addUser()">Agregar</button>
+
+  <h3>Actualizar Usuario</h3>
+  <input type="number" id="upd_id" placeholder="ID">
+  <input type="text" id="upd_name" placeholder="Nuevo nombre">
+  <input type="email" id="upd_email" placeholder="Nuevo correo">
+  <input type="password" id="upd_pwd" placeholder="Nueva contraseña">
+  <button onclick="updateUser()">Actualizar</button>
+
+  <h3>Eliminar Usuario</h3>
+  <input type="number" id="del_id" placeholder="ID a eliminar">
+  <button onclick="deleteUser()">Eliminar</button>
+
+  <h3>Consultar</h3>
+  <button onclick="getUsers()">Ver todos</button>
+  <input type="number" id="get_id" placeholder="ID">
+  <button onclick="getUser()">Buscar por ID</button>
+
+  <h3>Resultado</h3>
+  <textarea id="output" readonly></textarea>
+
+  <script>
+    const baseURL = "https://abarrotes-3zch.onrender.com";
+
+    function showOutput(data) {
+      document.getElementById("output").value = JSON.stringify(data, null, 2);
+    }
+
+    function addUser() {
+      fetch(`${baseURL}/addUser`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          email: document.getElementById("email").value,
+          pwd: document.getElementById("pwd").value
+        })
+      }).then(res => res.json()).then(showOutput);
+    }
+
+    function updateUser() {
+      fetch(`${baseURL}/update`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: document.getElementById("upd_id").value,
+          name: document.getElementById("upd_name").value,
+          email: document.getElementById("upd_email").value,
+          pwd: document.getElementById("upd_pwd").value
+        })
+      }).then(res => res.json()).then(showOutput);
+    }
+
+    function deleteUser() {
+      const id = document.getElementById("del_id").value;
+      fetch(`${baseURL}/delete/${id}`, {
+        method: "DELETE"
+      }).then(res => res.json()).then(showOutput);
+    }
+
+    function getUsers() {
+      fetch(`${baseURL}/users`)
+        .then(res => res.json())
+        .then(showOutput);
+    }
+
+    function getUser() {
+      const id = document.getElementById("get_id").value;
+      fetch(`${baseURL}/user/${id}`)
+        .then(res => res.json())
+        .then(showOutput);
+    }
+  </script>
+</body>
+</html>
